@@ -1,7 +1,7 @@
 const main = document.querySelector('.main');
 const input = document.querySelector('input');
 const button = document.querySelector('button');
-const trash = document.querySelector('#trash');
+let id = 0;
 
 function enter() {
     if (window.event.keyCode == 13) {
@@ -13,30 +13,28 @@ function enter() {
 
         const list = document.createElement('div');
         list.setAttribute('class', 'list');
-
-        const text = document.createElement('div');
-        text.setAttribute('class', 'list__name');
-        text.textContent = input.value;
-
-        const deleteBtn = document.createElement('button');
-        deleteBtn.setAttribute('class', 'list__delete');
-        deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-        deleteBtn.addEventListener('click', () => {
-            main.removeChild(list);
-        });
-
-        list.appendChild(text);
-        list.appendChild(deleteBtn);
-
+        list.setAttribute('data-id', `${id}`);
+        list.innerHTML = `
+            <div class="list__name">${input.value}</div>
+            <button class="list__delete">
+                <i class="fas fa-trash-alt" data-id=${id}></i>
+            </button>
+        `;
+        id++;
         main.appendChild(list);
-
-        list.scrollIntoView({
-            block: 'center'
-        });
+        list.scrollIntoView({ block: 'center' });
         input.value = '';
         input.focus();
     }
 };
+
+main.addEventListener('click', event => {
+    const id = event.target.dataset.id;
+    if(id&&event.target.className!=='list') {
+        const toBeDeleted = document.querySelector(`.list[data-id="${id}"]`);
+        toBeDeleted.remove();
+    }
+});
 
 button.addEventListener('click', () => {
     if (input.value === '') {
@@ -44,27 +42,18 @@ button.addEventListener('click', () => {
         input.focus();
         return;
     }
-
     const list = document.createElement('div');
     list.setAttribute('class', 'list');
-
-    const text = document.createElement('div');
-    text.setAttribute('class', 'list__name');
-    text.textContent = input.value;
-
-    const deleteBtn = document.createElement('button');
-    deleteBtn.setAttribute('class', 'list__delete');
-    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-    deleteBtn.addEventListener('click', () => {
-        main.removeChild(list);
-    });
-
-    list.appendChild(text);
-    list.appendChild(deleteBtn);
-
+    list.setAttribute('data-id', `${id}`);
+    list.innerHTML = `
+        <div class="list__name">${input.value}</div>
+        <button class="list__delete">
+            <i class="fas fa-trash-alt" data-id=${id}></i>
+        </button>
+    `;
+    id++;
     main.appendChild(list);
-
+    list.scrollIntoView({ block: 'center' });
     input.value = '';
     input.focus();
-
 });
